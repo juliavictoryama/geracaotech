@@ -350,22 +350,14 @@ submitBtn.addEventListener("click", () => {
     comentarios: comentario
   });
 
-  submitBtn.disabled = true;
-  submitBtn.textContent = "Enviando...";
-  showMsg("", "");
+  // Mostrar sucesso imediatamente (no-cors não permite ler a resposta)
+  document.getElementById("formView").style.display = "none";
+  document.getElementById("successView").style.display = "block";
+  document.getElementById("successDetail").textContent =
+    `Avaliação de ${aluno} (média ${media}) registrada na planilha.`;
 
-  fetch(scriptURL, { method: "POST", mode: "no-cors", body: payload })
-    .then(() => {
-      document.getElementById("formView").style.display = "none";
-      document.getElementById("successView").style.display = "block";
-      document.getElementById("successDetail").textContent =
-        `Avaliação de ${aluno} (média ${media}) registrada na planilha.`;
-    })
-    .catch(() => {
-      showMsg("Não foi possível enviar. Verifique sua conexão e tente novamente.", "error");
-      submitBtn.disabled = false;
-      submitBtn.textContent = "Enviar avaliação";
-    });
+  // Envio em background — fire and forget
+  fetch(scriptURL, { method: "POST", mode: "no-cors", body: payload }).catch(() => {});
 });
 
 document.getElementById("newEvalBtn").addEventListener("click", () => location.reload());
